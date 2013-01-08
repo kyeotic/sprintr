@@ -1,0 +1,29 @@
+<head>
+    <title>Sprintr</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="span2">
+                {{> sprintList }}
+            </div>            
+            <div class="span10">
+                {{> sprint }}
+            </div>            
+        </div>
+    </div>
+</body>
+
+<template name="sprintList">
+    <ul>
+        {{#each items}}
+            <li>{{name}}</li>
+        {{/each}}
+        <li><button>New Sprint</button></li>
+    </ul>
+</template>
+
+<template name="sprint">
+    <span>YOLO SWAGGART THE 3rd</span>
+</template>
