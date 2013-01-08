@@ -1,0 +1,13 @@
+<template name="sprintList">
+    <ul class="nav nav-pills nav-stacked pull-right sprint-menu">
+        <li>
+            <button class="btn">New Sprint <i class="icon-plus"></i></button>    
+        </li>
+        <li class="divider"></li>
+        
+        {{#each items}}
+            <li {{#if isActive}}class="active"{{/if}}><a href="#">{{name}}</a></li>
+        {{/each}}
+        
+    </ul>
+</template>
