@@ -2,6 +2,13 @@
 {{#with sprint}}
     <h1>{{name}}</h1>
     <input type="text" id="sprint-name" value="{{name}}">
+    
+    <ul>
+    {{#each sprint.workStories}}
+        <li>{{text}} - {{points}}</li>
+    {{/each}}
+    </ul>
+    
     <button id="sprint-remove" class="btn btn-danger">{{deleteButtonLabel}}</button>
 {{/with}}
 </template>

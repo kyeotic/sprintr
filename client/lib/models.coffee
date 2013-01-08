@@ -1,15 +1,23 @@
 class Task
-    constructor: (data) ->
-        @points = 0
-        @text = ""
-        @isTestTask = false
+    constructor: (data = {}) ->
+        @points = data.points ||0
+        @text = data.text || ""
+        @isTestTask = data.isTestTask || false
         
 class WorkStory
     constructor: (data = {}) ->
-        @points = 0
-        @isCommitted = true
-        @text = ""
-        @tasks = [new Task()]
+        @points = data.points|| 0
+        @isCommitted = data.isCommitted || true
+        @text = data.text || ""
+        
+        tasks = []        
+        if (data.tasks?.length)
+            data.tasks.forEach (i) ->
+                tasks.push new Task(i)
+        else
+            tasks.push new Task()
+        @tasks = tasks
+        
     summary: ->
         label = if @isCommitted then "C" else "S"
         result = "#{@points}(#{label}) - #{@text}\n"

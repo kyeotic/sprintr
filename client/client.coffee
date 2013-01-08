@@ -78,5 +78,6 @@ Meteor.startup ->
             Session.set("sprintId", @location)
             SelectedSprint = new Lib.Sprint Sprints.findOne(Session.get("sprintId"))
             console.log SelectedSprint
+            Meteor.flush()
         if Router.location != ""
             Router.onNavigate()
