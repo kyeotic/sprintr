@@ -1,3 +1,7 @@
+Router = window.app.router
+Lib = window.app.lib
+SelectedSprint = {}
+
 #Id of the currently selected sprint
 Session.set("sprintId", null)
 
@@ -8,10 +12,27 @@ Session.set('editingSprintName', false)
 #used for forcing confirm on delete
 Session.set("deleteConfirm", false)
 
+Meteor.subscribe "sprints", ->
+    if (!Session.get("sprintId"))        
+        sprint = Sprints.findOne({}, {sort: {timestamp: -1}})
+        if sprint
+            Router.set(sprint._id)
+        else
+            Template.sprintList.newSprint()
+
+Meteor.startup ->
+    Meteor.autorun ->
+        Router.onNavigate = ->
+            Session.set("sprintId", @location)
+            SelectedSprint = new Lib.Sprint Sprints.findOne(Session.get("sprintId"))
+            #console.log SelectedSprint
+            Meteor.flush()
+        if Router.location != ""
+            Router.onNavigate()
+
 #
 #Sprint
 #
-
 
 Template.sprint.deleteButtonLabel = ->
     return if Session.get("deleteConfirm") then "Actually Delete" else "Delete Sprint"

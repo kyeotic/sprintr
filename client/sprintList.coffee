@@ -1,3 +1,6 @@
+Router = window.app.router
+Lib = window.app.lib
+
 #
 #Sprint List
 #
