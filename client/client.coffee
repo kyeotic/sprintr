@@ -17,46 +17,20 @@ Session.set("sprintId", null)
 #When editing a list name, ID of the list
 Session.set('editingSprintName', false)
 
-#
-#Sprint List
-#
 
-Template.sprintList.items = ->
-    return Sprints.find({}, {sort: {timestamp: -1}})
-    
-Template.sprintList.isActive = ->
-    return this._id == Session.get("sprintId")
-
-Template.sprintList.newSprint = ->
-    newId = Sprints.insert new Lib.Sprint()
-    Router.set(newId)
-    
-Template.sprintList.events {
-    "click #new-sprint": (evt) ->
-        Template.sprintList.newSprint()
-        return
-    "click .sprint-select": (evt) ->
-        evt.preventDefault()
-        Router.set(this._id)
-        return
-}
+#used for forcing confirm on delete
+Session.set("deleteConfirm", false)
 
 #
 #Sprint
 #
 
-Session.set("deleteConfirm", false)
+
 Template.sprint.deleteButtonLabel = ->
     return if Session.get("deleteConfirm") then "Actually Delete" else "Delete Sprint"
 
 Template.sprint.sprint = ->
     return Sprints.findOne Session.get("sprintId")
-
-Template.sprint.events Lib.okCancelEvents "#sprint-name", {
-        ok: (value) ->
-            Sprints.update(this._id, {$set: {name: value}})
-            Meteor.flush()
-    }
 
 Template.sprint.events Lib.okCancelEvents "#sprint-name", {
         ok: (value) ->
