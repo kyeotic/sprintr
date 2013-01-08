@@ -1,5 +1,7 @@
 <template name="sprint">
+{{#with sprint}}
     <h1>{{name}}</h1>
-    <span>{{_id}}</span>
-    <input type="text" id="sprint-name" value="{{name}}" />
+    <p>{{_id}}</p>
+    <input type="text" id="sprint-name" value="{{name}}">
+{{/with}}
 </template>

@@ -7,7 +7,7 @@ Meteor.subscribe "sprints", ->
     console.log "sprint count it #{count}"
     if (!Session.get("sprintId"))
         
-        sprint = Sprints.findOne({}, {sort: {name: 1}})
+        sprint = Sprints.findOne({}, {sort: {name: -1}})
         if sprint
             Router.set(sprint._id)
         else
@@ -21,7 +21,7 @@ Session.set("sprintId", null)
 #
 
 Template.sprintList.items = ->
-    return Sprints.find({}, {sort: {name: 1}})
+    return Sprints.find({}, {sort: {name: -1}})
     
 Template.sprintList.isActive = ->
     return this._id == Session.get("sprintId")
@@ -29,15 +29,24 @@ Template.sprintList.isActive = ->
 Template.sprintList.newSprint = ->
     newId = Sprints.insert({name: "New Sprint"})
     Router.set(newId)
-
+    
+Template.sprintList.events {
+    "click #new-sprint": (evt) ->
+        Template.sprintList.newSprint()
+}
 
 #
 #Sprint
 #
 
+Template.sprint.sprint = ->
+    return Sprints.findOne Session.get("sprintId")
+
 Template.sprint.events Lib.okCancelEvents "#sprint-name",
     {
-        ok: (text) -> Sprints.update(this._id, {$set: {name: value}})
+        ok: (value) -> 
+            console.log this
+            Sprints.update(this._id, {$set: {name: value}})
     }
 
 
