@@ -16,14 +16,19 @@
 </body>
 
 <template name="sprintList">
-    <ul>
+    <ul class="nav nav-pills nav-stacked pull-right sprint-menu">
+        <li>
+            <button class="btn">New Sprint <i class="icon-plus"></i></button>    
+        </li>
+        <li class="divider"></li>
+        
         {{#each items}}
-            <li>{{name}}</li>
+            <li {{#if isActive}}class="active"{{/if}}><a href="#">{{name}}</a></li>
         {{/each}}
-        <li><button>New Sprint</button></li>
+        
     </ul>
 </template>
 
 <template name="sprint">
-    <span>YOLO SWAGGART THE 3rd</span>
+    <h1>YOLO SWAGGART THE 3rd</h1>
 </template>
