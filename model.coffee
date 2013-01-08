@@ -8,7 +8,7 @@ work stories contain tasks
 
 ###
 
-Sprints = new Meteor.Collection("sprints");
+Sprints = new Meteor.Collection("sprints")
 
 #clients can do any actions on sprints
 Sprints.allow {

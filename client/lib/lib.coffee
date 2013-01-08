@@ -25,18 +25,18 @@ lib.activateInput = (input) ->
     
 Array.prototype.moveUp = (item) -> 
     index = this.indexOf(item)
-	if (index == -1 || index == 0) #Isn't in array or is already first
-		return		
-	this.remove(item);
-	this.splice(index - 1, 0, item)
+    if (index == -1 || index == 0) #Isn't in array or is already first
+    	return		
+    this.remove(item);
+    this.splice(index - 1, 0, item)
     return
 
 Array.prototype.moveDown = (item) ->
-	index = this.indexOf(item)
-	if (index == -1 || index + 1 == this.length) #Isn't in array or is already last
-		return		
-	this.remove(item);
-	this.splice(index + 1, 0, item)
+    index = this.indexOf(item)
+    if (index == -1 || index + 1 == this.length) #Isn't in array or is already last
+    	return		
+    this.remove(item);
+    this.splice(index + 1, 0, item)
     return
 
 window.app.lib = lib

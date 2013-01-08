@@ -1,13 +1,38 @@
 <template name="sprint">
 {{#with sprint}}
-    <h1>{{name}}</h1>
-    <input type="text" id="sprint-name" value="{{name}}">
+
+    {{#if editingName}}
+      <h1 class="sprint-name">
+        <input type="text" id="sprint-name" value="{{name}}">
+      </h1>
+    {{else}}
+      <h1 class="sprint-name">{{name}}</h1>
+    {{/if}}
     
-    <ul>
-    {{#each sprint.workStories}}
-        <li>{{text}} - {{points}}</li>
-    {{/each}}
-    </ul>
+    
+    <div>
+        <ul class="unstyled">
+        {{#each workStories}}
+            <li>{{text}} - {{points}}<input type="text" class="story-name-input" value="{{name}}" />
+                <ul class="unstyled">
+                {{#each tasks}}
+                    <li>{{text}} - {{points}}<input type="text" class="task-name-input" value="{{name}}" /></li>
+                {{/each}}
+                </ul>
+                <button class="btn-small add-task">
+                    <i class="icon_plus"></i>
+                    Add Task
+                </button>
+            </li>
+        {{/each}}
+        </ul>
+        <button class="btn-small add-story">
+            <i class="icon_plus"></i>
+            Add WorkStory
+        </button>
+    </div>
+    
+    <textarea class="sprint-summary">{{summary}}</textarea>
     
     <button id="sprint-remove" class="btn btn-danger">{{deleteButtonLabel}}</button>
 {{/with}}

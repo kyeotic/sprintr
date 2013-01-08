@@ -1,14 +1,14 @@
 class Task
     constructor: (data = {}) ->
         @points = data.points ||0
-        @text = data.text || ""
+        @name = data.name || ""
         @isTestTask = data.isTestTask || false
         
 class WorkStory
     constructor: (data = {}) ->
         @points = data.points|| 0
         @isCommitted = data.isCommitted || true
-        @text = data.text || ""
+        @name = data.name || ""
         
         tasks = []        
         if (data.tasks?.length)
@@ -20,15 +20,15 @@ class WorkStory
         
     summary: ->
         label = if @isCommitted then "C" else "S"
-        result = "#{@points}(#{label}) - #{@text}\n"
+        result = "#{@points}(#{label}) - #{@name}\n"
         @tasks.forEach (i) ->
             type = if i.isTestTask then 'TT' else 'TA'
-            result += "\t#{i.points} - #{type} - #{i.text}\n"
+            result += "\t#{i.points} - #{type} - #{i.name}\n"
         return result
         
 class Sprint
     constructor: (data = {}) ->
-        console.log data
+        #console.log data
         @name = data.name || "New Sprint"
         @timestamp = data.timestamp || new Date()
         workStories = []
@@ -58,7 +58,7 @@ class Sprint
         return total
     summary: ->
         result = ""
-        @workStories.forEach (i) ->
+        @workStories.forEach (i) =>
             result += "#{i.summary()}\n"
             result += "\nTotal Points: #{@points()}"
             result += "\nCommitted Points: #{@committedPoints()}"
