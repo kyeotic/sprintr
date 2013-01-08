@@ -1,10 +1,10 @@
 
 Router = window.app.router
 Lib = window.app.lib
+SelectedSprint = {}
 
 Meteor.subscribe "sprints", ->
-    if (!Session.get("sprintId"))
-        
+    if (!Session.get("sprintId"))        
         sprint = Sprints.findOne({}, {sort: {timestamp: -1}})
         if sprint
             Router.set(sprint._id)
@@ -25,7 +25,7 @@ Template.sprintList.isActive = ->
     return this._id == Session.get("sprintId")
 
 Template.sprintList.newSprint = ->
-    newId = Sprints.insert({name: "New Sprint", timestamp: new Date()})
+    newId = Sprints.insert new Lib.Sprint()
     Router.set(newId)
     
 Template.sprintList.events {
@@ -76,5 +76,7 @@ Meteor.startup ->
     Meteor.autorun ->
         Router.onNavigate = ->
             Session.set("sprintId", @location)
+            SelectedSprint = new Lib.Sprint Sprints.findOne(Session.get("sprintId"))
+            console.log SelectedSprint
         if Router.location != ""
             Router.onNavigate()
