@@ -23,10 +23,10 @@
 </template>
 
 <template name="workstory">
-    <ul class="unstyled">
+    <ul class="unstyled stories">
     {{#each workStories}}
         <li class="workstory">
-            {{name}} - {{points}}
+            <input type="text" class="story-points" value="{{points}}">
             <input type="text" class="story-name" 
                 value="{{name}}" placeholder="New WorkStory" />
             {{> task}}
@@ -39,11 +39,11 @@
 </template>
 
 <template name="task">
-    <ul class="unstyled">
+    <ul class="unstyled tasks">
     {{#each tasks}}
         <li class="task">
-            {{name}} - {{points}}
-            <input type="text" class="task-name-input" 
+            <input type="text" class="task-points" value="{{points}}">
+            <input type="text" class="task-name" 
                 value="{{name}}" placeholder="New Task" />
         </li>
     {{/each}}

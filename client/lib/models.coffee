@@ -1,11 +1,15 @@
+random = Meteor.random
+
 class Task
     constructor: (data = {}) ->
+        @id = data.id || random()
         @points = data.points ||0
         @name = data.name || ""
         @isTestTask = data.isTestTask || false
         
 class WorkStory
     constructor: (data = {}) ->
+        @id = data.id || random()
         @points = data.points|| 0
         @isCommitted = data.isCommitted || true
         @name = data.name || ""
@@ -29,7 +33,8 @@ class WorkStory
 class Sprint
     constructor: (data = {}) ->
         #console.log data
-        @_id = data._id
+        if (data._id)
+            @_id = data._id
         @name = data.name || "New Sprint"
         @timestamp = data.timestamp || new Date()
         workStories = []
@@ -51,7 +56,6 @@ class Sprint
                 total += parseInt i.points
         return total
     stretchPoints: ->
-        Points: ->
         total = 0
         @workStories.forEach (i) -> 
             if !i.isCommitted 
@@ -61,9 +65,9 @@ class Sprint
         result = ""
         @workStories.forEach (i) =>
             result += "#{i.summary()}\n"
-            result += "\nTotal Points: #{@points()}"
-            result += "\nCommitted Points: #{@committedPoints()}"
-            result += "\nStretch Points: #{@stretchPoints()}"
+        result += "\nTotal Points: #{@points()}"
+        result += "\nCommitted Points: #{@committedPoints()}"
+        result += "\nStretch Points: #{@stretchPoints()}"
         return result
         
 lib = window.app.lib || {}

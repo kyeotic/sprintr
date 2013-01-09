@@ -1,24 +1,6 @@
 Router = window.app.router
 Lib = window.app.lib
-SelectedSprint = {}
-
-Meteor.subscribe "sprints", ->
-    if (!Session.get("sprintId"))        
-        sprint = Sprints.findOne({}, {sort: {timestamp: -1}})
-        if sprint
-            Router.set(sprint._id)
-        else
-            Template.sprintList.newSprint()
-
-Meteor.startup ->
-    Meteor.autorun ->
-        Router.onNavigate = ->
-            Session.set("sprintId", @location)
-            SelectedSprint = new Lib.Sprint Sprints.findOne(Session.get("sprintId"))
-            #console.log SelectedSprint
-            Meteor.flush()
-        if Router.location != ""
-            Router.onNavigate()
+SelectedSprint = window.app.SelectedSprint || {}
 
 ###
 Sprint
@@ -63,10 +45,9 @@ Template.sprint.events {
             clear = -> Session.set("deleteConfirm", false)
             setTimeout(clear, 3000)
     "click .add-story": (evt) ->
-        console.log "New Story"
         workStory =  new Lib.WorkStory()
+        SelectedSprint.workStories.push(workStory)
         Sprints.update(this._id, { $push: { workStories: workStory } })
-        console.log this
     "click .add-task": (evt) ->
         console.log this
     "click .sprint-name": (evt, tmpl) ->
@@ -101,11 +82,22 @@ Template.sprint.tasks = ->
 WorkStory
 ###
 
+updateStory = (id, property, value) ->
+    story = SelectedSprint.workStories.find (i) ->
+        return i.id == id
+    storyIndex = SelectedSprint.workStories.indexOf(story)        
+    story[property] = value
+    set = {}
+    set["workStories.#{storyIndex}.#{property}"] = value
+    Sprints.update(SelectedSprint._id, { $set: set})
+
 Template.workstory.events Lib.okCancelEvents ".story-name", {
-        ok: (value) ->
-            console.log "workstory update"
-            storyIndex = SelectedSprint.workStories.indexOf(this)
-            console.log storyIndex
-            #Sprints.update(SelectedSprint._id, {$set: {name: value}})
-    }
+    ok: (value) ->        
+        updateStory(this.id, "name", value)
+}
+
+Template.workstory.events Lib.okCancelEvents ".story-points", {
+    ok: (value) ->
+        updateStory(this.id, "points", value)
+}
     
