@@ -7,28 +7,12 @@
       </h1>
     {{else}}
       <h1 class="sprint-name">{{name}}</h1>
-    {{/if}}
-    
+    {{/if}}    
     
     <div>
-        <ul class="unstyled">
-        {{#each workStories}}
-            <li>{{text}} - {{points}}<input type="text" class="story-name-input" value="{{name}}" />
-                <ul class="unstyled">
-                {{#each tasks}}
-                    <li>{{text}} - {{points}}<input type="text" class="task-name-input" value="{{name}}" /></li>
-                {{/each}}
-                </ul>
-                <button class="btn-small add-task">
-                    <i class="icon_plus"></i>
-                    Add Task
-                </button>
-            </li>
-        {{/each}}
-        </ul>
+        {{> workstory}}
         <button class="btn-small add-story">
-            <i class="icon_plus"></i>
-            Add WorkStory
+            <i class="icon_plus"></i>Add WorkStory
         </button>
     </div>
     
@@ -36,4 +20,32 @@
     
     <button id="sprint-remove" class="btn btn-danger">{{deleteButtonLabel}}</button>
 {{/with}}
+</template>
+
+<template name="workstory">
+    <ul class="unstyled">
+    {{#each workStories}}
+        <li class="workstory">
+            {{name}} - {{points}}
+            <input type="text" class="story-name" 
+                value="{{name}}" placeholder="New WorkStory" />
+            {{> task}}
+            <button class="btn-small add-task">
+                <i class="icon_plus"></i>Add Task
+            </button>
+        </li>
+    {{/each}}
+    </ul>        
+</template>
+
+<template name="task">
+    <ul class="unstyled">
+    {{#each tasks}}
+        <li class="task">
+            {{name}} - {{points}}
+            <input type="text" class="task-name-input" 
+                value="{{name}}" placeholder="New Task" />
+        </li>
+    {{/each}}
+    </ul>
 </template>

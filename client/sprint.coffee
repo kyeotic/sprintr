@@ -2,16 +2,6 @@ Router = window.app.router
 Lib = window.app.lib
 SelectedSprint = {}
 
-#Id of the currently selected sprint
-Session.set("sprintId", null)
-
-#When editing a list name, ID of the list
-Session.set('editingSprintName', false)
-
-
-#used for forcing confirm on delete
-Session.set("deleteConfirm", false)
-
 Meteor.subscribe "sprints", ->
     if (!Session.get("sprintId"))        
         sprint = Sprints.findOne({}, {sort: {timestamp: -1}})
@@ -30,9 +20,19 @@ Meteor.startup ->
         if Router.location != ""
             Router.onNavigate()
 
-#
-#Sprint
-#
+###
+Sprint
+###
+
+#Id of the currently selected sprint
+Session.set("sprintId", null)
+
+#When editing a list name, ID of the list
+Session.set('editingSprintName', false)
+
+
+#used for forcing confirm on delete
+Session.set("deleteConfirm", false)
 
 Template.sprint.deleteButtonLabel = ->
     return if Session.get("deleteConfirm") then "Actually Delete" else "Delete Sprint"
@@ -63,6 +63,9 @@ Template.sprint.events {
             clear = -> Session.set("deleteConfirm", false)
             setTimeout(clear, 3000)
     "click .add-story": (evt) ->
+        console.log "New Story"
+        workStory =  new Lib.WorkStory()
+        Sprints.update(this._id, { $push: { workStories: workStory } })
         console.log this
     "click .add-task": (evt) ->
         console.log this
@@ -92,3 +95,17 @@ Template.sprint.tasks = ->
     if !this.tasks
         return
     return this.tasks
+    
+    
+###
+WorkStory
+###
+
+Template.workstory.events Lib.okCancelEvents ".story-name", {
+        ok: (value) ->
+            console.log "workstory update"
+            storyIndex = SelectedSprint.workStories.indexOf(this)
+            console.log storyIndex
+            #Sprints.update(SelectedSprint._id, {$set: {name: value}})
+    }
+    

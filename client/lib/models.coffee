@@ -29,6 +29,7 @@ class WorkStory
 class Sprint
     constructor: (data = {}) ->
         #console.log data
+        @_id = data._id
         @name = data.name || "New Sprint"
         @timestamp = data.timestamp || new Date()
         workStories = []
