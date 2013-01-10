@@ -7,7 +7,7 @@
       </h1>
     {{else}}
       <h1 class="sprint-name">{{name}}</h1>
-    {{/if}}    
+    {{/if}}
     
     <div>
         {{> workstory}}
@@ -26,6 +26,7 @@
     <ul class="unstyled stories">
     {{#each workStories}}
         <li class="workstory">
+            <h2 class="story-commit">{{#if isCommitted}}C{{else}}S{{/if}}</h2>
             <input type="text" class="story-points" value="{{points}}">
             <input type="text" class="story-name" 
                 value="{{name}}" placeholder="New WorkStory" />
@@ -48,6 +49,13 @@
             <input type="text" class="task-points" value="{{points}}">
             <input type="text" class="task-name" 
                 value="{{name}}" placeholder="New Task" />
+                
+            <button class="btn btn-mini btn-info task-moveup">
+                <i class="icon-arrow-up icon-white"></i>
+            </button>
+            <button class="btn btn-mini btn-info task-movedown">
+                <i class="icon-arrow-down icon-white"></i>
+            </button>
             <button class="btn btn-mini btn-danger remove-task">
                 <i class="icon-remove"></i>
             </button>

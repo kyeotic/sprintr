@@ -111,6 +111,8 @@ Template.workstory.events Lib.okCancelEvents ".story-points", {
 Template.workstory.events {
     "click .add-task": (evt) ->
         updateStory(this.id, "tasks", new Lib.Task(), "$push")
+    "click .story-commit": (evt) ->
+        updateStory(this.id, "isCommitted", !this.isCommitted, "$set")
 }
 
 Template.workstory.events {
@@ -148,6 +150,9 @@ Template.task.events {
         update["workStories.#{storyIndex}.tasks"] = this
         #console.log update
         Sprints.update(SelectedSprint._id, { $pull: update })
+    "click .task-moveup": (event, template) ->
+        taskId = this.id
+        storyIndex = SelectedSprint.workStories.findIndex (i) -> i.id == template.data.id
 }
 
     
