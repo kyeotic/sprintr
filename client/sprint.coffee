@@ -145,8 +145,8 @@ Template.task.events {
         SelectedSprint.workStories[storyIndex].tasks.remove((i) -> i.id == taskId)
         
         update = {}
-        update["workStores.#{storyIndex}.tasks"] = this
-        console.log update
+        update["workStories.#{storyIndex}.tasks"] = this
+        #console.log update
         Sprints.update(SelectedSprint._id, { $pull: update })
 }
 
