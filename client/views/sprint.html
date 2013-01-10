@@ -11,8 +11,8 @@
     
     <div>
         {{> workstory}}
-        <button class="btn-small add-story">
-            <i class="icon_plus"></i>Add WorkStory
+        <button class="btn btn-small add-story">
+            <i class="icon-plus"></i>Add WorkStory
         </button>
     </div>
     
@@ -30,8 +30,11 @@
             <input type="text" class="story-name" 
                 value="{{name}}" placeholder="New WorkStory" />
             {{> task}}
-            <button class="btn-small add-task">
-                <i class="icon_plus"></i>Add Task
+            <button class="btn btn-small add-task">
+                <i class="icon-plus"></i>Add Task
+            </button>
+            <button class="btn btn-small btn-danger remove-story">
+                <i class="icon-remove"></i>Remove WorkStory
             </button>
         </li>
     {{/each}}
@@ -45,6 +48,9 @@
             <input type="text" class="task-points" value="{{points}}">
             <input type="text" class="task-name" 
                 value="{{name}}" placeholder="New Task" />
+            <button class="btn btn-mini btn-danger remove-task">
+                <i class="icon-remove"></i>
+            </button>
         </li>
     {{/each}}
     </ul>

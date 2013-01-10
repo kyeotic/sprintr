@@ -35,7 +35,7 @@ Template.sprint.events {
         if Session.get("deleteConfirm")
             Sprints.remove(this._id)
             Session.set("deleteConfirm", false)
-            sprint = Sprints.findOne({}, {sort: {name: 1}})
+            sprint = Sprints.findOne({}, {sort: {timestamp: -1}})
             if sprint
                 Router.set(sprint._id)
             else
@@ -48,8 +48,6 @@ Template.sprint.events {
         workStory =  new Lib.WorkStory()
         SelectedSprint.workStories.push(workStory)
         Sprints.update(this._id, { $push: { workStories: workStory } })
-    "click .add-task": (evt) ->
-        console.log this
     "click .sprint-name": (evt, tmpl) ->
         Session.set('editingSprintName', true)
         Meteor.flush() # force DOM redraw, so we can focus the edit field
@@ -82,22 +80,74 @@ Template.sprint.tasks = ->
 WorkStory
 ###
 
-updateStory = (id, property, value) ->
-    story = SelectedSprint.workStories.find (i) ->
-        return i.id == id
-    storyIndex = SelectedSprint.workStories.indexOf(story)        
-    story[property] = value
-    set = {}
-    set["workStories.#{storyIndex}.#{property}"] = value
-    Sprints.update(SelectedSprint._id, { $set: set})
+updateSprint = (action, value) ->
+    mod = {}
+    mod[action] = value    
+    Sprints.update(SelectedSprint._id, mod)
+
+updateStory = (id, property, value, action = "$set") ->
+    story = SelectedSprint.workStories.find (i) -> return i.id == id
+    storyIndex = SelectedSprint.workStories.indexOf(story)     
+    
+    if action == "$set"
+        story[property] = value
+    else if action == "$push"
+        story[property].push(value)
+    
+    update = {}
+    update["workStories.#{storyIndex}.#{property}"] = value    
+    updateSprint(action, update)    
 
 Template.workstory.events Lib.okCancelEvents ".story-name", {
     ok: (value) ->        
-        updateStory(this.id, "name", value)
+        updateStory(this.id, "name", value, "$set")
 }
 
 Template.workstory.events Lib.okCancelEvents ".story-points", {
     ok: (value) ->
-        updateStory(this.id, "points", value)
+        updateStory(this.id, "points", value, "$set")
 }
+
+Template.workstory.events {
+    "click .add-task": (evt) ->
+        updateStory(this.id, "tasks", new Lib.Task(), "$push")
+}
+
+Template.workstory.events {
+    "click .remove-story": (evt) ->
+        storyId = this.id
+        SelectedSprint.workStories.remove((i) -> i.id == storyId)
+        Sprints.update(SelectedSprint._id, { $pull: { workStories: this } })
+}
+
+###
+Task
+###
+
+updateTask = (taskId, story, property, value) -> #No kids, only action is set
+    taskIndex = story.tasks.findIndex (i) -> i.id == taskId
+    updateStory(story.id, "tasks.#{taskIndex}.#{property}", value)
+
+Template.task.events Lib.okCancelEvents ".task-name", {
+    ok: (value, event, template) ->
+        updateTask(this.id, template.data, "name", value)
+}
+
+Template.task.events Lib.okCancelEvents ".task-points", {
+    ok: (value, event, template) ->
+        updateTask(this.id, template.data, "points", value)
+}
+
+Template.task.events {
+    "click .remove-task": (event, template) ->
+        taskId = this.id
+        storyIndex = SelectedSprint.workStories.findIndex (i) -> i.id == template.data.id
+        SelectedSprint.workStories[storyIndex].tasks.remove((i) -> i.id == taskId)
+        
+        update = {}
+        update["workStores.#{storyIndex}.tasks"] = this
+        console.log update
+        Sprints.update(SelectedSprint._id, { $pull: update })
+}
+
     

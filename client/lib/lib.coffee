@@ -8,15 +8,15 @@ lib.okCancelEvents = (selector, callbacks) ->
     cancel = callbacks.cancel || ->
     
     events = {}
-    events["keyup #{selector}, keydown #{selector}, focusout #{selector}"] = (evt) ->
+    events["keyup #{selector}, keydown #{selector}, focusout #{selector}"] = (evt, tmpl) ->
         if (evt.type == "keydown" && evt.which == 27)
-            cancel.call(this,  evt)
+            cancel.call(this,  evt, tmpl)
         else if (evt.type == "keyup" && evt.which == 13 || evt.type == "focusout")
             value = String(evt.target.value || "")
             if value
-                ok.call(this, value, evt)
+                ok.call(this, value, evt, tmpl)
             else
-                cancel.call(this, evt)
+                cancel.call(this, evt, tmpl)
     return events
 
 lib.activateInput = (input) ->
