@@ -25,26 +25,33 @@
 <template name="workstory">
     <ul class="unstyled stories">
     {{#each workStories}}
-        <li class="workstory">
+        <li class="story">
+            <button class="story-collapse">
+                <i class="{{#if isCollapsed}}icon-chevron-right{{else}}icon-chevron-down{{/if}} icon-white"></i>
+            </button>
             <h2 class="story-commit">{{#if isCommitted}}C{{else}}S{{/if}}</h2>
             <input type="text" class="story-points" value="{{points}}">
             <input type="text" class="story-name" 
                 value="{{name}}" placeholder="New WorkStory" />
-            {{> task}}
-            <button class="btn btn-small add-task">
-                <i class="icon-plus"></i>Add Task
-            </button>
-            <button class="btn btn-small btn-danger remove-story">
-                <i class="icon-remove"></i>Remove WorkStory
-            </button>
-            <div class="btn-group btn-group-vertical">
-                <button class="btn btn-mini btn-info story-moveup">
-                    <i class="icon-arrow-up icon-white"></i>
+                
+            <div class="story-body {{#if isCollapsed}}collapsed{{/if}}">
+                {{> task}}
+                <button class="btn btn-small add-task">
+                    <i class="icon-plus"></i>Add Task
                 </button>
-                <button class="btn btn-mini btn-info story-movedown">
-                    <i class="icon-arrow-down icon-white"></i>
+                <button class="btn btn-small btn-danger remove-story">
+                    <i class="icon-remove"></i>Remove WorkStory
                 </button>
+                <div class="btn-group btn-group-vertical">
+                    <button class="btn btn-mini btn-info story-moveup">
+                        <i class="icon-arrow-up icon-white"></i>
+                    </button>
+                    <button class="btn btn-mini btn-info story-movedown">
+                        <i class="icon-arrow-down icon-white"></i>
+                    </button>
+                </div>
             </div>
+            
         </li>
     {{/each}}
     </ul>        

@@ -98,7 +98,15 @@ Template.workstory.events {
         SprintModel.moveStory(this.id, "up")
     "click .story-movedown": (evt) ->
         SprintModel.moveStory(this.id, "down")
+    "click .story-collapse": (evt) ->
+        collapser = "story#{this.id}-isCollapsed"
+        unless Session.get(collapser)? #init the collapse as false
+            Session.set(collapser, false)  
+        Session.set(collapser, !Session.get(collapser))
 }
+
+Template.workstory.isCollapsed = ->
+    return Session.get("story#{this.id}-isCollapsed") || false
 
 Template.workstory.events {
     "click .remove-story": (evt) ->
