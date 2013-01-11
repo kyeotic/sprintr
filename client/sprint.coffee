@@ -1,9 +1,6 @@
 Router = window.app.router
 Lib = window.app.lib
-
-SelectedSprint = window.app.SelectedSprint ||  ->
-    Sprints.findOne Session.get("sprintId")
-SprintModel = Lib.SprintModel
+SprintModel = window.app.SprintModel || {}
 
 ###
 Sprint
@@ -23,7 +20,7 @@ Template.sprint.deleteButtonLabel = ->
     return if Session.get("deleteConfirm") then "Actually Delete" else "Delete Sprint"
 
 Template.sprint.sprint = ->
-    return Sprints.findOne Session.get("sprintId")
+    return Sprints.findOne(Session.get("sprintId")) #need to find a way around this
 
 Template.sprint.events Lib.okCancelEvents "#sprint-name", {
         ok: (value) ->
@@ -49,7 +46,6 @@ Template.sprint.events {
             setTimeout(clear, 3000)
     "click .add-story": (evt) ->
         workStory =  new Lib.WorkStory()
-        ##SelectedSprint.workStories.push(workStory)
         Sprints.update(this._id, { $push: { workStories: workStory } })
     "click .sprint-name": (evt, tmpl) ->
         Session.set('editingSprintName', true)
@@ -62,8 +58,10 @@ Template.sprint.editingName = ->
     return Session.equals('editingSprintName', true)
 
 Template.sprint.summary = ->
-    sprint = SelectedSprint()
-    return SprintModel.summary(sprint)
+    if !SprintModel.subscribe
+        return
+    SprintModel.subscribe() #to set subcription for initial display
+    return SprintModel.summary()
 
 Template.sprint.workStories = ->
     #We can arrive before the context is set
@@ -81,81 +79,52 @@ Template.sprint.tasks = ->
 WorkStory
 ###
 
-updateSprint = (action, value) ->
-    mod = {}
-    mod[action] = value
-    Sprints.update(SelectedSprint()._id, mod)
-
-updateStory = (id, property, value, action = "$set") ->    
-    sprint = SelectedSprint()
-    story = sprint.workStories.find (i) -> return i.id == id
-    storyIndex = sprint.workStories.indexOf(story)
-    
-    if action == "$set"
-        story[property] = value
-    else if action == "$push"
-        story[property].push(value)
-        
-    update = {}
-    update["workStories.#{storyIndex}.#{property}"] = value
-    updateSprint(action, update)
-
 Template.workstory.events Lib.okCancelEvents ".story-name", {
     ok: (value) ->
-        updateStory(this.id, "name", value, "$set")
+        SprintModel.updateStory(this.id, "name", value, "$set")
 }
 
 Template.workstory.events Lib.okCancelEvents ".story-points", {
     ok: (value) ->
-        updateStory(this.id, "points", value, "$set")
+        SprintModel.updateStory(this.id, "points", value, "$set")
 }
 
 Template.workstory.events {
     "click .add-task": (evt) ->
-        updateStory(this.id, "tasks", new Lib.Task(), "$push")
+        SprintModel.updateStory(this.id, "tasks", new Lib.Task(), "$push")
     "click .story-commit": (evt) ->
-        updateStory(this.id, "isCommitted", !this.isCommitted, "$set")
+        SprintModel.updateStory(this.id, "isCommitted", !this.isCommitted, "$set")
+    "click .story-moveup": (evt) ->
+        SprintModel.moveStory(this.id, "up")
+    "click .story-movedown": (evt) ->
+        SprintModel.moveStory(this.id, "down")
 }
 
 Template.workstory.events {
     "click .remove-story": (evt) ->
-        storyId = this.id
-        ##SelectedSprint.workStories.remove((i) -> i.id == storyId)
-        Sprints.update(SelectedSprint()._id, { $pull: { workStories: this } })
+        SprintModel.removeStory(this.id)
 }
 
 ###
 Task
 ###
 
-updateTask = (taskId, story, property, value) -> #No kids, only action is set
-    taskIndex = story.tasks.findIndex (i) -> i.id == taskId
-    updateStory(story.id, "tasks.#{taskIndex}.#{property}", value)
-
 Template.task.events Lib.okCancelEvents ".task-name", {
     ok: (value, event, template) ->
-        updateTask(this.id, template.data, "name", value)
+        SprintModel.updateTask(this.id, template.data, "name", value)
 }
 
 Template.task.events Lib.okCancelEvents ".task-points", {
     ok: (value, event, template) ->
-        updateTask(this.id, template.data, "points", value)
+        SprintModel.updateTask(this.id, template.data, "points", value)
 }
 
 Template.task.events {
     "click .remove-task": (event, template) ->
-        taskId = this.id
-        sprint = SelectedSprint()
-        storyIndex = sprint.workStories.findIndex (i) -> i.id == template.data.id
-        ##SelectedSprint.workStories[storyIndex].tasks.remove((i) -> i.id == taskId)
-
-        update = {}
-        update["workStories.#{storyIndex}.tasks"] = this
-        #console.log update
-        Sprints.update(sprint._id, { $pull: update })
+        SprintModel.removeTask(this.id, template.data.id)
     "click .task-moveup": (event, template) ->
-        taskId = this.id
-        sprint = SelectedSprint()
-        story = sprint.workStories.findIndex (i) -> 
+        SprintModel.moveTask(this.id, template.data.id, "up")
+    "click .task-movedown": (event, template) ->
+        SprintModel.moveTask(this.id, template.data.id, "down")
 }
 

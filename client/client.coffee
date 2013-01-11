@@ -1,6 +1,7 @@
 
 Router = window.app.router
 Lib = window.app.lib
+SprintModel = window.app.SprintModel || {}
 
 #select the first sprint, or make a new one if none exist
 selectSprintDefault = ->      
@@ -11,8 +12,9 @@ selectSprintDefault = ->
         Template.sprintList.newSprint()
 
 Meteor.subscribe "sprints", ->
-    Router.onNavigate = ->
-        
+    SprintModel = new Lib.SprintModel Sprints
+    
+    Router.onNavigate = ->        
         Session.set("sprintId", @location)  # Set the session for tracking      
         sprint = Sprints.findOne(Session.get("sprintId"))
         
@@ -20,8 +22,7 @@ Meteor.subscribe "sprints", ->
             console.log @location
             selectSprintDefault()
             return
-        Meteor.flush()
-    
+        Meteor.flush()    
     
     if Router.location != "" #if a location exists, go to it
         Router.onNavigate()
