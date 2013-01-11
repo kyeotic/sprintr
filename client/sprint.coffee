@@ -115,6 +115,8 @@ Template.workstory.events Lib.okCancelEvents ".story-points", {
 Template.workstory.events {
     "click .add-task": (evt) ->
         updateStory(this.id, "tasks", new Lib.Task(), "$push")
+    "click .story-commit": (evt) ->
+        updateStory(this.id, "isCommitted", !this.isCommitted, "$set")
 }
 
 Template.workstory.events {
