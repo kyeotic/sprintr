@@ -3,6 +3,7 @@ Lib = window.app.lib
 
 SelectedSprint = window.app.SelectedSprint ||  ->
     Sprints.findOne Session.get("sprintId")
+SprintModel = Lib.SprintModel
 
 ###
 Sprint
@@ -62,10 +63,7 @@ Template.sprint.editingName = ->
 
 Template.sprint.summary = ->
     sprint = SelectedSprint()
-    if !sprint?.summary
-        return
-    #console.log SelectedSprint.summary()
-    return sprint.summary()
+    return SprintModel.summary(sprint)
 
 Template.sprint.workStories = ->
     #We can arrive before the context is set
@@ -155,5 +153,9 @@ Template.task.events {
         update["workStories.#{storyIndex}.tasks"] = this
         #console.log update
         Sprints.update(sprint._id, { $pull: update })
+    "click .task-moveup": (event, template) ->
+        taskId = this.id
+        sprint = SelectedSprint()
+        story = sprint.workStories.findIndex (i) -> 
 }
 

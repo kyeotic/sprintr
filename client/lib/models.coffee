@@ -1,77 +1,66 @@
 random = Meteor.random
 
 class Task
-    constructor: (data = {}) ->
-        @id = data.id || random()
-        @points = data.points ||0
-        @name = data.name || ""
-        @isTestTask = data.isTestTask || false
-        
+    constructor: () ->
+        @id = random()
+        @points = 0
+        @name = ""
+        @isTestTask = false
+
 class WorkStory
     constructor: (data = {}) ->
         @id = data.id || random()
         @points = data.points|| 0
         @isCommitted = data.isCommitted || true
         @name = data.name || ""
-        
-        tasks = []        
-        if (data.tasks?.length)
-            data.tasks.forEach (i) ->
-                tasks.push new Task(i)
-        else
-            tasks.push new Task()
-        @tasks = tasks
-        
-    summary: ->
-        label = if @isCommitted then "C" else "S"
-        result = "#{@points}(#{label}) - #{@name}\n"
-        @tasks.forEach (i) ->
-            type = if i.isTestTask then 'TT' else 'TA'
-            result += "\t#{i.points} - #{type} - #{i.name}\n"
-        return result
-        
+
+        @tasks = [new Task()]
+
 class Sprint
-    constructor: (data = {}) ->
-        #console.log data
-        if (data._id)
-            @_id = data._id
-        @name = data.name || "New Sprint"
-        @timestamp = data.timestamp || new Date()
-        workStories = []
-        
-        if (data.workStories?.length)
-            data.workStories.forEach (i) ->
-                workStories.push new WorkStory(i)
-        else
-            workStories.push new WorkStory()
-        @workStories = workStories
+    constructor: () ->
+        @name = "New Sprint"
+        @timestamp = new Date()
+        @workStories = [new WorkStory()]
+
+class SprintModel
+    constructor: ->
+        @sprint = {} #for tracking the sprint through callers
     points: ->
         total = 0
-        @workStories.forEach (i) -> total += parseInt i.points
+        @sprint.workStories?.forEach (i) -> total += parseInt i.points
         return total
     committedPoints: ->
         total = 0
-        @workStories.forEach (i) -> 
-            if i.isCommitted 
+        @sprint.workStories?.forEach (i) ->
+            if i.isCommitted
                 total += parseInt i.points
         return total
     stretchPoints: ->
         total = 0
-        @workStories.forEach (i) -> 
-            if !i.isCommitted 
+        @sprint.workStories?.forEach (i) ->
+            if !i.isCommitted
                 total += parseInt i.points
         return total
-    summary: ->
+    storySummary: (story) ->
+        label = if story.isCommitted then "C" else "S"
+        result = "#{story.points}(#{label}) - #{story.name}\n"
+        story.tasks.forEach (i) ->
+            type = if i.isTestTask then 'TT' else 'TA'
+            result += "\t#{i.points} - #{type} - #{i.name}\n"
+        return result
+    summary: (sprint = {}) ->
+        @sprint = sprint
         result = ""
-        @workStories.forEach (i) =>
-            result += "#{i.summary()}\n"
+        @sprint.workStories?.forEach (i) =>
+            result += "#{@storySummary(i)}\n"
         result += "\nTotal Points: #{@points()}"
         result += "\nCommitted Points: #{@committedPoints()}"
         result += "\nStretch Points: #{@stretchPoints()}"
         return result
-        
+
 lib = window.app.lib || {}
 
 lib.Task = Task
 lib.WorkStory = WorkStory
 lib.Sprint = Sprint
+lib.SprintModel = new SprintModel()
