@@ -1,6 +1,8 @@
 Router = window.app.router
 Lib = window.app.lib
-SelectedSprint = window.app.SelectedSprint || {}
+
+SelectedSprint = window.app.SelectedSprint ||  ->
+    Sprints.findOne Session.get("sprintId")
 
 ###
 Sprint
@@ -46,60 +48,62 @@ Template.sprint.events {
             setTimeout(clear, 3000)
     "click .add-story": (evt) ->
         workStory =  new Lib.WorkStory()
-        SelectedSprint.workStories.push(workStory)
+        ##SelectedSprint.workStories.push(workStory)
         Sprints.update(this._id, { $push: { workStories: workStory } })
     "click .sprint-name": (evt, tmpl) ->
         Session.set('editingSprintName', true)
         Meteor.flush() # force DOM redraw, so we can focus the edit field
         Lib.activateInput(tmpl.find("#sprint-name"))
-        return    
+        return
 }
 
 Template.sprint.editingName = ->
     return Session.equals('editingSprintName', true)
 
 Template.sprint.summary = ->
-    if !SelectedSprint?.summary
+    sprint = SelectedSprint()
+    if !sprint?.summary
         return
     #console.log SelectedSprint.summary()
-    return SelectedSprint.summary()
+    return sprint.summary()
 
 Template.sprint.workStories = ->
     #We can arrive before the context is set
     if !this.workStories
         return
     return this.workStories
-    
+
 Template.sprint.tasks = ->
     if !this.tasks
         return
     return this.tasks
-    
-    
+
+
 ###
 WorkStory
 ###
 
 updateSprint = (action, value) ->
     mod = {}
-    mod[action] = value    
-    Sprints.update(SelectedSprint._id, mod)
+    mod[action] = value
+    Sprints.update(SelectedSprint()._id, mod)
 
-updateStory = (id, property, value, action = "$set") ->
-    story = SelectedSprint.workStories.find (i) -> return i.id == id
-    storyIndex = SelectedSprint.workStories.indexOf(story)     
+updateStory = (id, property, value, action = "$set") ->    
+    sprint = SelectedSprint()
+    story = sprint.workStories.find (i) -> return i.id == id
+    storyIndex = sprint.workStories.indexOf(story)
     
     if action == "$set"
         story[property] = value
     else if action == "$push"
         story[property].push(value)
-    
+        
     update = {}
-    update["workStories.#{storyIndex}.#{property}"] = value    
-    updateSprint(action, update)    
+    update["workStories.#{storyIndex}.#{property}"] = value
+    updateSprint(action, update)
 
 Template.workstory.events Lib.okCancelEvents ".story-name", {
-    ok: (value) ->        
+    ok: (value) ->
         updateStory(this.id, "name", value, "$set")
 }
 
@@ -111,15 +115,13 @@ Template.workstory.events Lib.okCancelEvents ".story-points", {
 Template.workstory.events {
     "click .add-task": (evt) ->
         updateStory(this.id, "tasks", new Lib.Task(), "$push")
-    "click .story-commit": (evt) ->
-        updateStory(this.id, "isCommitted", !this.isCommitted, "$set")
 }
 
 Template.workstory.events {
     "click .remove-story": (evt) ->
         storyId = this.id
-        SelectedSprint.workStories.remove((i) -> i.id == storyId)
-        Sprints.update(SelectedSprint._id, { $pull: { workStories: this } })
+        ##SelectedSprint.workStories.remove((i) -> i.id == storyId)
+        Sprints.update(SelectedSprint()._id, { $pull: { workStories: this } })
 }
 
 ###
@@ -143,16 +145,13 @@ Template.task.events Lib.okCancelEvents ".task-points", {
 Template.task.events {
     "click .remove-task": (event, template) ->
         taskId = this.id
-        storyIndex = SelectedSprint.workStories.findIndex (i) -> i.id == template.data.id
-        SelectedSprint.workStories[storyIndex].tasks.remove((i) -> i.id == taskId)
-        
+        sprint = SelectedSprint()
+        storyIndex = sprint.workStories.findIndex (i) -> i.id == template.data.id
+        ##SelectedSprint.workStories[storyIndex].tasks.remove((i) -> i.id == taskId)
+
         update = {}
         update["workStories.#{storyIndex}.tasks"] = this
         #console.log update
-        Sprints.update(SelectedSprint._id, { $pull: update })
-    "click .task-moveup": (event, template) ->
-        taskId = this.id
-        storyIndex = SelectedSprint.workStories.findIndex (i) -> i.id == template.data.id
+        Sprints.update(sprint._id, { $pull: update })
 }
 
-    

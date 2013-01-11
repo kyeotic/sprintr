@@ -1,7 +1,6 @@
 
 Router = window.app.router
 Lib = window.app.lib
-SelectedSprint = {}
 
 #select the first sprint, or make a new one if none exist
 selectSprintDefault = ->      
@@ -21,9 +20,6 @@ Meteor.subscribe "sprints", ->
             console.log @location
             selectSprintDefault()
             return
-            
-        SelectedSprint = new Lib.Sprint sprint #load sprint into model
-        #console.log SelectedSprint
         Meteor.flush()
     
     
