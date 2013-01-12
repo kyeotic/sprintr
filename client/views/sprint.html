@@ -27,14 +27,14 @@
     {{#each workStories}}
         <li class="story">
             <button class="story-collapse">
-                <i class="{{#if isCollapsed}}icon-chevron-right{{else}}icon-chevron-down{{/if}} icon-white"></i>
+                <i class="icon-chevron-down icon-white"></i>
             </button>
             <h2 class="story-commit">{{#if isCommitted}}C{{else}}S{{/if}}</h2>
             <input type="text" class="story-points" value="{{points}}">
             <input type="text" class="story-name" 
                 value="{{name}}" placeholder="New WorkStory" />
                 
-            <div class="story-body {{#if isCollapsed}}collapsed{{/if}}">
+            <div class="story-body">
                 {{> task}}
                 <button class="btn btn-small add-task">
                     <i class="icon-plus"></i>Add Task
@@ -65,11 +65,8 @@
             <input type="text" class="task-name" 
                 value="{{name}}" placeholder="New Task" />
                 
-            <button class="btn btn-mini btn-info task-moveup">
-                <i class="icon-arrow-up icon-white"></i>
-            </button>
-            <button class="btn btn-mini btn-info task-movedown">
-                <i class="icon-arrow-down icon-white"></i>
+            <button class="btn btn-mini btn-info task-move">
+                <i class="icon-screenshot icon-white"></i>
             </button>
             <button class="btn btn-mini btn-danger remove-task">
                 <i class="icon-remove"></i>

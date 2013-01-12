@@ -98,12 +98,29 @@ Template.workstory.events {
         SprintModel.moveStory(this.id, "up")
     "click .story-movedown": (evt) ->
         SprintModel.moveStory(this.id, "down")
-    "click .story-collapse": (evt) ->
-        collapser = "story#{this.id}-isCollapsed"
-        unless Session.get(collapser)? #init the collapse as false
-            Session.set(collapser, false)  
-        Session.set(collapser, !Session.get(collapser))
+    "click .story-collapse": (evt, template) ->                
+        body = template.find(".story-body")
+        button = template.find(".story-collapse i")
+        toggleStoryCollapse(this.id, button, body)
+        return
 }
+
+iconExpand = "icon-chevron-down"
+iconCollapse = "icon-chevron-right"
+
+toggleStoryCollapse = (id, icon, body) ->
+    collapser = "story#{id}-isCollapsed"
+    unless Session.get(collapser)? #init the collapse as false
+        Session.set(collapser, false)  
+    Session.set(collapser, !Session.get(collapser))
+    
+    $(body).slideToggle()
+    if Session.get(collapser)
+        icon.classList.add iconCollapse
+        icon.classList.remove iconExpand
+    else
+        icon.classList.remove iconCollapse
+        icon.classList.add iconExpand
 
 Template.workstory.isCollapsed = ->
     return Session.get("story#{this.id}-isCollapsed") || false
@@ -134,5 +151,23 @@ Template.task.events {
         SprintModel.moveTask(this.id, template.data.id, "up")
     "click .task-movedown": (event, template) ->
         SprintModel.moveTask(this.id, template.data.id, "down")
+    "mousedown .task-move": (event, template) ->
+        taskId = this.id
+        storyId = template.data.id
+        setY = event.pageY        
+        setH = $(template.firstNode.firstElementChild).height()        
+        
+        taskMove = (e) ->
+            if Math.abs(e.pageY - setY) >= setH #(setH * 1.5) #Get halfway past
+                direction = if e.pageY < setY then "up" else "down"
+                SprintModel.moveTask(taskId, storyId, direction)
+                setY = e.pageY
+            return
+        
+        $(window).mousemove(taskMove)
+        
+        $(window).one "mouseup", ->
+            $(window).unbind("mousemove", taskMove)        
 }
+
 
