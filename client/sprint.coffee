@@ -98,34 +98,44 @@ Template.workstories.events {
         SprintModel.moveStory(this.id, "up")
     "click .story-movedown": (evt) ->
         SprintModel.moveStory(this.id, "down")
-    "click .story-collapse": (evt, template) ->                
-        body = template.find(".story-body")
-        button = template.find(".story-collapse i")
-        toggleStoryCollapse(this.id, button, body)
+    "click .story-collapse": (evt, template) ->
+        toggleStoryCollapse(this.id, getStoryNode(this.id, template))
         return
 }
 
-iconExpand = "icon-chevron-down"
-iconCollapse = "icon-chevron-right"
+getStoryNode = (id, template) ->
+    storyIndex = SprintModel.getStoryIndex(id)
+    return template.find(".story:nth-child(#{storyIndex + 1})") #stupid 0-1 index disagreement
 
-toggleStoryCollapse = (id, icon, body) ->
+toggleStoryCollapse = (id, story) ->
     collapser = "story#{id}-isCollapsed"
+    body = $(story).find(".story-body")
     if Session.get(collapser)
         #unhide
-        $(body).slideDown 400, ->
+        body.slideDown 400, ->
             Session.set(collapser, false)
     else
         #hide
-        $(body).slideUp 400, ->
+        body.slideUp 400, ->
             Session.set(collapser, true)
     return
 
 Template.workstories.isCollapsed = ->
     return Session.get("story#{this.id}-isCollapsed") || false
+Template.workstories.deleteLabel = ->
+    return if Session.get("story#{this.id}-deleteconfirm") then "Actually Remove" else "Remove WorkStory"
 
 Template.workstories.events {
-    "click .remove-story": (evt) ->
-        SprintModel.removeStory(this.id)
+    "click .remove-story": (e, template) ->
+        deleter = "story#{this.id}-deleteconfirm"
+        if Session.get(deleter)
+            Session.set(deleter, false)
+            window.test = template
+            #SprintModel.removeStory(this.id)
+        else
+            Session.set(deleter, true)
+            clear = -> Session.set(deleter, false)
+            setTimeout(clear, 3000)
 }
 
 ###
