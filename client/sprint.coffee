@@ -79,17 +79,17 @@ Template.sprint.tasks = ->
 WorkStory
 ###
 
-Template.workstory.events Lib.okCancelEvents ".story-name", {
+Template.workstories.events Lib.okCancelEvents ".story-name", {
     ok: (value) ->
         SprintModel.updateStory(this.id, "name", value, "$set")
 }
 
-Template.workstory.events Lib.okCancelEvents ".story-points", {
+Template.workstories.events Lib.okCancelEvents ".story-points", {
     ok: (value) ->
         SprintModel.updateStory(this.id, "points", value, "$set")
 }
 
-Template.workstory.events {
+Template.workstories.events {
     "click .add-task": (evt) ->
         SprintModel.updateStory(this.id, "tasks", new Lib.Task(), "$push")
     "click .story-commit": (evt) ->
@@ -110,22 +110,20 @@ iconCollapse = "icon-chevron-right"
 
 toggleStoryCollapse = (id, icon, body) ->
     collapser = "story#{id}-isCollapsed"
-    unless Session.get(collapser)? #init the collapse as false
-        Session.set(collapser, false)  
-    Session.set(collapser, !Session.get(collapser))
-    
-    $(body).slideToggle()
     if Session.get(collapser)
-        icon.classList.add iconCollapse
-        icon.classList.remove iconExpand
+        #unhide
+        $(body).slideDown 400, ->
+            Session.set(collapser, false)
     else
-        icon.classList.remove iconCollapse
-        icon.classList.add iconExpand
+        #hide
+        $(body).slideUp 400, ->
+            Session.set(collapser, true)
+    return
 
-Template.workstory.isCollapsed = ->
+Template.workstories.isCollapsed = ->
     return Session.get("story#{this.id}-isCollapsed") || false
 
-Template.workstory.events {
+Template.workstories.events {
     "click .remove-story": (evt) ->
         SprintModel.removeStory(this.id)
 }
@@ -134,17 +132,17 @@ Template.workstory.events {
 Task
 ###
 
-Template.task.events Lib.okCancelEvents ".task-name", {
+Template.tasks.events Lib.okCancelEvents ".task-name", {
     ok: (value, event, template) ->
         SprintModel.updateTask(this.id, template.data, "name", value)
 }
 
-Template.task.events Lib.okCancelEvents ".task-points", {
+Template.tasks.events Lib.okCancelEvents ".task-points", {
     ok: (value, event, template) ->
         SprintModel.updateTask(this.id, template.data, "points", value)
 }
 
-Template.task.events {
+Template.tasks.events {
     "click .remove-task": (event, template) ->
         SprintModel.removeTask(this.id, template.data.id)
     "click .task-moveup": (event, template) ->

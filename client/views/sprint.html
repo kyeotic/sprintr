@@ -10,32 +10,32 @@
     {{/if}}
     
     <div>
-        {{> workstory}}
+        {{> workstories}}
         <button class="btn btn-small add-story">
             <i class="icon-plus"></i>Add WorkStory
         </button>
     </div>
     
-    <textarea class="sprint-summary">{{summary}}</textarea>
+    <textarea readonly="readonly" class="sprint-summary">{{summary}}</textarea>
     
     <button id="sprint-remove" class="btn btn-danger">{{deleteButtonLabel}}</button>
 {{/with}}
 </template>
 
-<template name="workstory">
+<template name="workstories">
     <ul class="unstyled stories">
     {{#each workStories}}
         <li class="story">
             <button class="story-collapse">
-                <i class="icon-chevron-down icon-white"></i>
+                <i class="{{#if isCollapsed}}icon-chevron-right{{else}}icon-chevron-down{{/if}} icon-white"></i>
             </button>
             <h2 class="story-commit">{{#if isCommitted}}C{{else}}S{{/if}}</h2>
             <input type="text" class="story-points" value="{{points}}">
             <input type="text" class="story-name" 
                 value="{{name}}" placeholder="New WorkStory" />
                 
-            <div class="story-body">
-                {{> task}}
+            <div class="story-body {{#if isCollapsed}}collapsed{{/if}}">
+                {{> tasks}}
                 <button class="btn btn-small add-task">
                     <i class="icon-plus"></i>Add Task
                 </button>
@@ -57,7 +57,7 @@
     </ul>        
 </template>
 
-<template name="task">
+<template name="tasks">
     <ul class="unstyled tasks">
     {{#each tasks}}
         <li class="task">
