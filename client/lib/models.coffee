@@ -101,8 +101,10 @@ class SprintModel
     moveStory: (id, direction) ->
         story = @getStory(id)
         dir = if direction == "up" then "moveUp" else "moveDown"
-        @sprint.workStories[dir](story)
-        @update("$set", {workStories: @sprint.workStories})
+        result =@sprint.workStories[dir](story)
+        if result
+            @update("$set", {workStories: @sprint.workStories})
+        return result
     
     ###
     #Task Methods
@@ -122,8 +124,10 @@ class SprintModel
         story = @getStory(storyId)
         task = story.tasks.find (i) -> i.id == taskId
         dir = if direction == "up" then "moveUp" else "moveDown"
-        story.tasks[dir](task)
-        @updateStory(story.id, "tasks", story.tasks)
+        result = story.tasks[dir](task)
+        if result
+            @updateStory(story.id, "tasks", story.tasks)
+        return result
     
     
 

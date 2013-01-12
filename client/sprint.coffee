@@ -160,14 +160,12 @@ Template.task.events {
         taskMove = (e) ->
             if Math.abs(e.pageY - setY) >= setH #(setH * 1.5) #Get halfway past
                 direction = if e.pageY < setY then "up" else "down"
-                SprintModel.moveTask(taskId, storyId, direction)
-                setY = e.pageY
-            return
-        
-        $(window).mousemove(taskMove)
-        
+                if SprintModel.moveTask(taskId, storyId, direction)
+                    setY = e.pageY
+            return        
+        $(window).mousemove(taskMove)        
         $(window).one "mouseup", ->
-            $(window).unbind("mousemove", taskMove)        
+            $(window).unbind("mousemove", taskMove)
 }
 
 
