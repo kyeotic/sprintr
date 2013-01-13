@@ -49,8 +49,7 @@ Template.sprint.events {
             clear = -> Session.set("deleteConfirm", false)
             setTimeout(clear, 2000)
     "click .add-story": (evt) ->
-        workStory =  new Lib.WorkStory()
-        Sprints.update(this._id, { $push: { workStories: workStory } })
+        SprintModel.addStory()
     "click .sprint-name": (evt, tmpl) ->
         Session.set('editingSprintName', true)
         Meteor.flush() # force DOM redraw, so we can focus the edit field
@@ -101,7 +100,7 @@ Template.workstories.events Lib.okCancelEvents ".story-points", {
 
 Template.workstories.events {
     "click .add-task": (evt) ->
-        SprintModel.updateStory(this.id, "tasks", new Lib.Task(), "$push")
+        SprintModel.addTask(this.id)
     "click .story-commit": (evt) ->
         SprintModel.updateStory(this.id, "isCommitted", !this.isCommitted, "$set")
     "click .story-moveup": (evt) ->
@@ -115,8 +114,7 @@ Template.workstories.events {
         deleter = "story#{this.id}-deleteconfirm"
         if Session.get(deleter)
             Session.set(deleter, false)
-            window.test = template
-            #SprintModel.removeStory(this.id)
+            SprintModel.removeStory(this.id)
         else
             Session.set(deleter, true)
             clear = -> Session.set(deleter, false)
@@ -203,3 +201,43 @@ Template.tasks.taskDrag = (storyId) ->
     if moving == null || moving.storyId != storyId
         return ""
     return if moving.taskId == this.id then "dragging" else "dragging-other"
+    
+###
+#Hotkeys
+###
+
+hotkeys = (e) ->    
+    ###
+    r = 82
+    t = 87
+    y = 89
+    s = 83
+    d = 68
+    [ = 219
+    ] = 221
+    left = 37
+    up = 38
+    right = 39
+    down= 40
+    n = 78
+    ###    
+    if e.ctrlKey
+        switch e.keyCode
+            when 68 #s - new story
+                console.log "d"
+            when 89 #y = new task
+                console.log "y"
+            when 219,38 #[ and up - previous story
+                console.log "["
+            when 221,40 #] and down - next story
+                console.log "]"
+            else
+               return
+    else
+        return
+    #console.log e
+    e.preventDefault()
+    return
+
+window.testEvent = hotkeys
+window.document.addEventListener('keydown', hotkeys, false);

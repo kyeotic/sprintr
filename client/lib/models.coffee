@@ -84,6 +84,8 @@ class SprintModel
     getStory: (id) -> @sprint.workStories.find (i) -> i.id == id
     getStoryIndex: (id) -> @sprint.workStories.findIndex (i) -> i.id == id
     
+    addStory: ->
+        @_repository.update(@id, { $push: { workStories: new WorkStory() } })    
     updateStory: (id, property, value, action = "$set") ->
         story = @getStory(id)
         storyIndex = @sprint.workStories.indexOf(story)
@@ -111,6 +113,8 @@ class SprintModel
     #Task Methods
     ###
     
+    addTask: (storyId) ->
+        @updateStory(storyId, "tasks", new Task(), "$push")
     updateTask: (taskId, story, property, value) -> #No kids, only action is set
         taskIndex = story.tasks.findIndex (i) -> i.id == taskId
         @updateStory(story.id, "tasks.#{taskIndex}.#{property}", value)

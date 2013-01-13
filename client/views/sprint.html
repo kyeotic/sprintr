@@ -11,7 +11,7 @@
     
     <div>
         {{> workstories}}
-        <button class="btn btn-small add-story">
+        <button class="btn btn-small add-story" tabindex="-1">
             <i class="icon-plus"></i>Add WorkStory
         </button>
     </div>
@@ -26,7 +26,7 @@
     <ul class="unstyled stories">
     {{#each workStories}}
         <li class="story" id="{{id}}">
-            <button class="story-collapse">
+            <button class="story-collapse" tabindex="-1">
                 <i class="{{#if isCollapsed}}icon-chevron-right{{else}}icon-chevron-down{{/if}} icon-white"></i>
             </button>
             <h2 class="story-commit">{{#if isCommitted}}C{{else}}S{{/if}}</h2>
@@ -34,17 +34,17 @@
             <input type="text" name="name" class="story-name" 
                 value="{{name}}" placeholder="New WorkStory" />
             
-            <button name="move" class="btn btn-mini btn-info story-move">
+            <button name="move" class="btn btn-mini btn-info story-move" tabindex="-1">
                 <i class="icon-screenshot icon-white"></i>
             </button>
-            <button name="remove" class="btn btn-small btn-danger remove-story">
+            <button name="remove" class="btn btn-small btn-danger remove-story" tabindex="-1">
                 {{deleteLabel}}
             </button>
                 
                 
             <div class="story-body {{#if isCollapsed}}collapsed{{/if}}">
                 {{> tasks}}
-                <button name="add-task" class="btn btn-small add-task">
+                <button name="add-task" class="btn btn-small add-task" tabindex="-1">
                     <i class="icon-plus"></i>Add Task
                 </button>
             </div>
@@ -62,10 +62,10 @@
             <input type="text" name="name" class="task-name" 
                 value="{{name}}" placeholder="New Task" />
                 
-            <button name="move" class="btn btn-mini btn-link task-move">
+            <button name="move" class="btn btn-mini btn-link task-move" tabindex="-1">
                 <i class="icon-screenshot"></i>
             </button>
-            <button name="remove" class="btn btn-mini btn-danger remove-task">
+            <button name="remove" class="btn btn-mini btn-danger remove-task" tabindex="-1">
                 <i class="icon-remove"></i>
             </button>
         </li>
