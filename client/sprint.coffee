@@ -59,23 +59,6 @@ Template.sprint.events {
 
 Template.sprint.editingName = ->
     return Session.equals('editingSprintName', true)
-    
-    
-Template.sprintSideBar.committedPoints = -> 
-   if !SprintModel.subscribe
-        return
-    SprintModel.subscribe() #to set subcription for initial display
-    return SprintModel.committedPoints()
-Template.sprintSideBar.stretchPoints = -> 
-    if !SprintModel.subscribe
-        return
-    SprintModel.subscribe() #to set subcription for initial display
-    return SprintModel.stretchPoints()
-Template.sprintSideBar.totalPoints = -> 
-    if !SprintModel.subscribe
-        return
-    SprintModel.subscribe() #to set subcription for initial display
-    return SprintModel.points()
 
 Template.sprint.summary = ->
     if !SprintModel.subscribe
@@ -93,7 +76,26 @@ Template.sprint.tasks = ->
     if !this.tasks
         return
     return this.tasks
+    
+###
+SideBar
+###
 
+Template.sprintSideBar.committedPoints = -> 
+   if !SprintModel.subscribe
+        return
+    SprintModel.subscribe() #to set subcription for initial display
+    return SprintModel.committedPoints()
+Template.sprintSideBar.stretchPoints = -> 
+    if !SprintModel.subscribe
+        return
+    SprintModel.subscribe() #to set subcription for initial display
+    return SprintModel.stretchPoints()
+Template.sprintSideBar.totalPoints = -> 
+    if !SprintModel.subscribe
+        return
+    SprintModel.subscribe() #to set subcription for initial display
+    return SprintModel.points()
 
 ###
 WorkStory
@@ -101,7 +103,7 @@ WorkStory
 Template.workstories.isCollapsed = ->
     return Session.get("story#{this.id}-isCollapsed") || false
 Template.workstories.deleteStoryClass = ->
-    return if Session.get("story#{this.id}-deleteconfirm") then "btn-danger" else ""
+    return if Session.get("story#{this.id}-deleteconfirm") then "btn-danger" else ""    
 
 Template.workstories.events Lib.okCancelEvents ".story-name", {
     ok: (value) ->
