@@ -59,6 +59,23 @@ Template.sprint.events {
 
 Template.sprint.editingName = ->
     return Session.equals('editingSprintName', true)
+    
+    
+Template.sprintSideBar.committedPoints = -> 
+   if !SprintModel.subscribe
+        return
+    SprintModel.subscribe() #to set subcription for initial display
+    return SprintModel.committedPoints()
+Template.sprintSideBar.stretchPoints = -> 
+    if !SprintModel.subscribe
+        return
+    SprintModel.subscribe() #to set subcription for initial display
+    return SprintModel.stretchPoints()
+Template.sprintSideBar.totalPoints = -> 
+    if !SprintModel.subscribe
+        return
+    SprintModel.subscribe() #to set subcription for initial display
+    return SprintModel.points()
 
 Template.sprint.summary = ->
     if !SprintModel.subscribe

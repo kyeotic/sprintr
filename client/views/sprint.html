@@ -1,25 +1,49 @@
 <template name="sprint">
 {{#with sprint}}
-
-    {{#if editingName}}
-      <h1 class="sprint-name">
-        <input type="text" id="sprint-name" value="{{name}}">
-      </h1>
-    {{else}}
-      <h1 class="sprint-name">{{name}}</h1>
-    {{/if}}
     
-    <div>
-        {{> workstories}}
-        <button class="btn btn-small add-story" tabindex="-1">
-            <i class="icon-plus"></i>Add WorkStory
-        </button>
+    <div class="span10 sprint-main">
+        {{#if editingName}}
+          <h1 class="sprint-name">
+            <input type="text" id="sprint-name" value="{{name}}">
+          </h1>
+        {{else}}
+          <h1 class="sprint-name">{{name}}</h1>
+        {{/if}}
+        
+        <div>
+            {{> workstories}}
+            <button class="btn btn-small add-story" tabindex="-1">
+                <i class="icon-plus"></i>Add WorkStory
+            </button>
+        </div>
+        
+        <textarea readonly="readonly" class="sprint-summary">{{summary}}</textarea>
+        </br>
+        <button id="sprint-remove" class="btn btn-danger">{{deleteButtonLabel}}</button>
+    </div>
+    <div class="span2 sprint-sidebar">
+        {{> sprintSideBar}}
     </div>
     
-    <textarea readonly="readonly" class="sprint-summary">{{summary}}</textarea>
-    
-    <button id="sprint-remove" class="btn btn-danger">{{deleteButtonLabel}}</button>
 {{/with}}
+</template>
+
+<template name="sprintSideBar">
+    <h4>Overview</h4>
+    <dl>
+        <dt>{{committedPoints}}</dt><dd>Committed</br></dd>
+        <dt>{{stretchPoints}}</dt><dd>Stretch</br></dd>
+        <dt>{{totalPoints}}</dt><dd><strong>Total</strong></br></dd>
+    </dl>
+    
+    <h4>Hotkeys</h4>
+    <dl class="hotkey-list">
+        <dt>Ctrl+d</dt><dd>New Story</br></dd>
+        <dt>Ctrl+y</dt><dd>New Task</br></dd>
+        <dt>Ctrl+u</dt><dd>Last Task</br></dd>
+        <dt>Ctrl+[,&uarr;</dt><dd>Previous Story</br></dd>
+        <dt>Ctrl+],&darr;</dt><dd>Next Story</br></dd>
+    </dl>
 </template>
 
 <template name="workstories">
