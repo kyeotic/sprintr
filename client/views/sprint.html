@@ -25,25 +25,26 @@
 <template name="workstories">
     <ul class="unstyled stories">
     {{#each workStories}}
-        <li class="story">
+        <li class="story" id="{{id}}">
             <button class="story-collapse">
                 <i class="{{#if isCollapsed}}icon-chevron-right{{else}}icon-chevron-down{{/if}} icon-white"></i>
             </button>
             <h2 class="story-commit">{{#if isCommitted}}C{{else}}S{{/if}}</h2>
-            <input type="text" class="story-points" value="{{points}}">
-            <input type="text" class="story-name" 
-                value="{{name}}" placeholder="New WorkStory" />                
-            <button class="btn btn-mini btn-info story-move">
+            <input type="text" name="points" class="story-points" value="{{points}}">
+            <input type="text" name="name" class="story-name" 
+                value="{{name}}" placeholder="New WorkStory" />
+            
+            <button name="move" class="btn btn-mini btn-info story-move">
                 <i class="icon-screenshot icon-white"></i>
             </button>
-            <button class="btn btn-small btn-danger remove-story">
-                <i class="icon-remove"></i>{{deleteLabel}}
+            <button name="remove" class="btn btn-small btn-danger remove-story">
+                {{deleteLabel}}
             </button>
                 
                 
             <div class="story-body {{#if isCollapsed}}collapsed{{/if}}">
                 {{> tasks}}
-                <button class="btn btn-small add-task">
+                <button name="add-task" class="btn btn-small add-task">
                     <i class="icon-plus"></i>Add Task
                 </button>
             </div>
@@ -56,15 +57,15 @@
 <template name="tasks">
     <ul class="unstyled tasks">
     {{#each tasks}}
-        <li class="task">
-            <input type="text" class="task-points" value="{{points}}">
-            <input type="text" class="task-name" 
+        <li class="task {{taskDrag ../id}}" id="{{id}}">
+            <input type="text" name="points" class="task-points" value="{{points}}">
+            <input type="text" name="name" class="task-name" 
                 value="{{name}}" placeholder="New Task" />
                 
-            <button class="btn btn-mini btn-info task-move">
-                <i class="icon-screenshot icon-white"></i>
+            <button name="move" class="btn btn-mini btn-link task-move">
+                <i class="icon-screenshot"></i>
             </button>
-            <button class="btn btn-mini btn-danger remove-task">
+            <button name="remove" class="btn btn-mini btn-danger remove-task">
                 <i class="icon-remove"></i>
             </button>
         </li>

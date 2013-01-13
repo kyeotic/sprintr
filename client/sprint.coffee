@@ -16,6 +16,10 @@ Session.set('editingSprintName', false)
 #used for forcing confirm on delete
 Session.set("deleteConfirm", false)
 
+#store story id and task id when moving tasks in it
+movingTask = "movingTask"
+Session.set(movingTask, null) 
+
 Template.sprint.deleteButtonLabel = ->
     return if Session.get("deleteConfirm") then "Actually Delete" else "Delete Sprint"
 
@@ -180,8 +184,8 @@ Template.tasks.events {
         taskId = this.id
         storyId = template.data.id
         setY = event.pageY        
-        setH = $(template.firstNode.firstElementChild).height()        
-        
+        setH = $(template.firstNode.firstElementChild).height()
+        Session.set(movingTask, {storyId: storyId, taskId: taskId})
         taskMove = (e) ->
             if Math.abs(e.pageY - setY) >= setH #(setH * 1.5) #Get halfway past
                 direction = if e.pageY < setY then "up" else "down"
@@ -190,7 +194,12 @@ Template.tasks.events {
             return        
         $(window).mousemove(taskMove)        
         $(window).one "mouseup", ->
+            Session.set(movingTask, null)
             $(window).unbind("mousemove", taskMove)
 }
 
-
+Template.tasks.taskDrag = (storyId) ->
+    moving = Session.get(movingTask)
+    if moving == null || moving.storyId != storyId
+        return ""
+    return if moving.taskId == this.id then "dragging" else "dragging-other"

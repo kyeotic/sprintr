@@ -55,7 +55,8 @@ class SprintModel
         result = "#{story.points}(#{label}) - #{story.name}\n"
         story.tasks?.forEach (i) ->
             type = if i.isTestTask then 'TT' else 'TA'
-            result += "\t#{i.points} - #{type} - #{i.name}\n"
+            #result += "\t#{i.points} - #{type} - #{i.name}\n"
+            result += "\t#{i.points} - #{i.name}\n"
         return result
     summary: (sprint = {}) ->
         if !@sprint? or !@sprint.workStories?
