@@ -100,8 +100,8 @@ WorkStory
 ###
 Template.workstories.isCollapsed = ->
     return Session.get("story#{this.id}-isCollapsed") || false
-Template.workstories.deleteLabel = ->
-    return if Session.get("story#{this.id}-deleteconfirm") then "Actually Remove" else "Remove WorkStory"
+Template.workstories.deleteStoryClass = ->
+    return if Session.get("story#{this.id}-deleteconfirm") then "btn-danger" else ""
 
 Template.workstories.events Lib.okCancelEvents ".story-name", {
     ok: (value) ->
