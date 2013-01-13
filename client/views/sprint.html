@@ -32,24 +32,20 @@
             <h2 class="story-commit">{{#if isCommitted}}C{{else}}S{{/if}}</h2>
             <input type="text" class="story-points" value="{{points}}">
             <input type="text" class="story-name" 
-                value="{{name}}" placeholder="New WorkStory" />
+                value="{{name}}" placeholder="New WorkStory" />                
+            <button class="btn btn-mini btn-info story-move">
+                <i class="icon-screenshot icon-white"></i>
+            </button>
+            <button class="btn btn-small btn-danger remove-story">
+                <i class="icon-remove"></i>{{deleteLabel}}
+            </button>
+                
                 
             <div class="story-body {{#if isCollapsed}}collapsed{{/if}}">
                 {{> tasks}}
                 <button class="btn btn-small add-task">
                     <i class="icon-plus"></i>Add Task
                 </button>
-                <button class="btn btn-small btn-danger remove-story">
-                    <i class="icon-remove"></i>{{deleteLabel}}
-                </button>
-                <div class="btn-group btn-group-vertical">
-                    <button class="btn btn-mini btn-info story-moveup">
-                        <i class="icon-arrow-up icon-white"></i>
-                    </button>
-                    <button class="btn btn-mini btn-info story-movedown">
-                        <i class="icon-arrow-down icon-white"></i>
-                    </button>
-                </div>
             </div>
             
         </li>

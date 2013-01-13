@@ -43,7 +43,7 @@ Template.sprint.events {
         else
             Session.set("deleteConfirm", true)
             clear = -> Session.set("deleteConfirm", false)
-            setTimeout(clear, 3000)
+            setTimeout(clear, 2000)
     "click .add-story": (evt) ->
         workStory =  new Lib.WorkStory()
         Sprints.update(this._id, { $push: { workStories: workStory } })
@@ -78,14 +78,20 @@ Template.sprint.tasks = ->
 ###
 WorkStory
 ###
+Template.workstories.isCollapsed = ->
+    return Session.get("story#{this.id}-isCollapsed") || false
+Template.workstories.deleteLabel = ->
+    return if Session.get("story#{this.id}-deleteconfirm") then "Actually Remove" else "Remove WorkStory"
 
 Template.workstories.events Lib.okCancelEvents ".story-name", {
     ok: (value) ->
+        if this.name == value then return
         SprintModel.updateStory(this.id, "name", value, "$set")
 }
 
 Template.workstories.events Lib.okCancelEvents ".story-points", {
     ok: (value) ->
+        if this.points == value then return
         SprintModel.updateStory(this.id, "points", value, "$set")
 }
 
@@ -100,6 +106,33 @@ Template.workstories.events {
         SprintModel.moveStory(this.id, "down")
     "click .story-collapse": (evt, template) ->
         toggleStoryCollapse(this.id, getStoryNode(this.id, template))
+        return
+    "click .remove-story": (e, template) ->
+        deleter = "story#{this.id}-deleteconfirm"
+        if Session.get(deleter)
+            Session.set(deleter, false)
+            window.test = template
+            #SprintModel.removeStory(this.id)
+        else
+            Session.set(deleter, true)
+            clear = -> Session.set(deleter, false)
+            setTimeout(clear, 2000)
+        return
+    "mousedown .story-move": (e, template) ->
+        storyId = this.id
+        storyNode = getStoryNode(this.id, template)
+        setY = event.pageY
+        setH = $(storyNode).height()        
+        
+        storyMove = (e) ->
+            if Math.abs(e.pageY - setY) >= setH #(setH * 1.5) #Get halfway past
+                direction = if e.pageY < setY then "up" else "down"
+                if SprintModel.moveStory(storyId, direction)
+                    setY = e.pageY
+            return        
+        $(window).mousemove(storyMove)        
+        $(window).one "mouseup", ->
+            $(window).unbind("mousemove", storyMove)
         return
 }
 
@@ -120,35 +153,19 @@ toggleStoryCollapse = (id, story) ->
             Session.set(collapser, true)
     return
 
-Template.workstories.isCollapsed = ->
-    return Session.get("story#{this.id}-isCollapsed") || false
-Template.workstories.deleteLabel = ->
-    return if Session.get("story#{this.id}-deleteconfirm") then "Actually Remove" else "Remove WorkStory"
-
-Template.workstories.events {
-    "click .remove-story": (e, template) ->
-        deleter = "story#{this.id}-deleteconfirm"
-        if Session.get(deleter)
-            Session.set(deleter, false)
-            window.test = template
-            #SprintModel.removeStory(this.id)
-        else
-            Session.set(deleter, true)
-            clear = -> Session.set(deleter, false)
-            setTimeout(clear, 3000)
-}
-
 ###
 Task
 ###
 
 Template.tasks.events Lib.okCancelEvents ".task-name", {
     ok: (value, event, template) ->
+        if this.name == value then return
         SprintModel.updateTask(this.id, template.data, "name", value)
 }
 
 Template.tasks.events Lib.okCancelEvents ".task-points", {
     ok: (value, event, template) ->
+        if this.points == value then return
         SprintModel.updateTask(this.id, template.data, "points", value)
 }
 
