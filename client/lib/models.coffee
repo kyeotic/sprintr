@@ -1,4 +1,4 @@
-random = Meteor.random
+random = Meteor.uuid
 
 class Task
     constructor: () ->

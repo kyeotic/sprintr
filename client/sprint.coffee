@@ -136,7 +136,37 @@ Template.workstories.events {
         $(window).one "mouseup", ->
             $(window).unbind("mousemove", storyMove)
         return
+    "keydown .story": (e, template) ->
+        storyHotkeys(e, this.id, template)
+        return
 }
+
+addTaskAndSelect = (storyId, template) ->
+    console.log "y"
+    console.log storyId
+    SprintModel.addTask(storyId)
+    story = SprintModel.getStory(storyId)
+    taskId = story.tasks.last().id
+    
+    window.test = template
+    console.log template.data
+    #Lib.activateInput
+
+storyHotkeys = (e, storyId, template) ->
+    if e.ctrlKey
+        switch e.keyCode
+            when 89 #y = new task
+                addTaskAndSelect(storyId, template)
+            when 219,38 #[ and up - previous story
+                console.log "["
+            when 221,40 #] and down - next story
+                console.log "]"
+            else
+                return
+    else
+        return
+    e.preventDefault()
+    return
 
 getStoryNode = (id, template) ->
     storyIndex = SprintModel.getStoryIndex(id)
@@ -206,8 +236,7 @@ Template.tasks.taskDrag = (storyId) ->
 #Hotkeys
 ###
 
-hotkeys = (e) ->    
-    ###
+###
     r = 82
     t = 87
     y = 89
@@ -220,17 +249,13 @@ hotkeys = (e) ->
     right = 39
     down= 40
     n = 78
-    ###    
+###
+hotkeys = (e) ->    
+        
     if e.ctrlKey
         switch e.keyCode
             when 68 #s - new story
                 console.log "d"
-            when 89 #y = new task
-                console.log "y"
-            when 219,38 #[ and up - previous story
-                console.log "["
-            when 221,40 #] and down - next story
-                console.log "]"
             else
                return
     else
@@ -239,5 +264,5 @@ hotkeys = (e) ->
     e.preventDefault()
     return
 
-window.testEvent = hotkeys
+#window.testEvent = hotkeys
 window.document.addEventListener('keydown', hotkeys, false);
