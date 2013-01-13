@@ -140,27 +140,38 @@ Template.workstories.events {
         storyHotkeys(e, this.id, template)
         return
 }
-
-addTaskAndSelect = (storyId, template) ->
-    console.log "y"
-    console.log storyId
-    SprintModel.addTask(storyId)
+    
+selectLastTask = (storyId) ->
     story = SprintModel.getStory(storyId)
     taskId = story.tasks.last().id
+    Meteor.flush()
+    Lib.activateInput $(".tasks > ##{taskId} > input[name=\"name\"]")
+selectStory = (storyId) ->
+    Lib.activateInput $(".stories > ##{storyId} > input[name=\"name\"]")
+selectPreviousWorkStory = (storyId) ->
+    storyIndex = SprintModel.getStoryIndex(storyId)
+    if storyIndex <= 0 #can't move to previous if first
+        return
+    selectStory(SprintModel.sprint.workStories[storyIndex - 1].id)
+selectNextWorkStory = (storyId) ->
+    storyIndex = SprintModel.getStoryIndex(storyId)
+    if storyIndex >= SprintModel.sprint.workStories.length - 1 #can't select next if last
+        return
+    selectStory(SprintModel.sprint.workStories[storyIndex + 1].id)
     
-    window.test = template
-    console.log template.data
-    #Lib.activateInput
 
 storyHotkeys = (e, storyId, template) ->
     if e.ctrlKey
         switch e.keyCode
             when 89 #y = new task
-                addTaskAndSelect(storyId, template)
+                SprintModel.addTask(storyId)
+                selectLastTask(storyId)
+            when 85 #u - select last task
+                selectLastTask(storyId)
             when 219,38 #[ and up - previous story
-                console.log "["
+                selectPreviousWorkStory(storyId)
             when 221,40 #] and down - next story
-                console.log "]"
+                selectNextWorkStory(storyId)
             else
                 return
     else
@@ -255,7 +266,9 @@ hotkeys = (e) ->
     if e.ctrlKey
         switch e.keyCode
             when 68 #s - new story
-                console.log "d"
+                SprintModel.addStory()
+                Meteor.flush()
+                selectStory(SprintModel.sprint.workStories.last().id)
             else
                return
     else
