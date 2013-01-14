@@ -21,7 +21,7 @@
         </br>
         <button id="sprint-remove" class="btn btn-danger">{{deleteButtonLabel}}</button>
     </div>
-    <div class="span2 sprint-sidebar">
+    <div class="span2">
         {{> sprintSideBar}}
     </div>
     
@@ -29,6 +29,7 @@
 </template>
 
 <template name="sprintSideBar">
+<div class="sprint-sidebar well">
     <h4>Overview</h4>
     <dl>
         <dt>{{committedPoints}}</dt><dd>Committed</br></dd>
@@ -41,9 +42,10 @@
         <dt>Ctrl+d</dt><dd>New Story</br></dd>
         <dt>Ctrl+y</dt><dd>New Task</br></dd>
         <dt>Ctrl+u</dt><dd>Last Task</br></dd>
-        <dt>Ctrl+[,&uarr;</dt><dd>Previous Story</br></dd>
-        <dt>Ctrl+],&darr;</dt><dd>Next Story</br></dd>
+        <dt>Ctrl+[,&uarr;</dt><dd>Story Up</br></dd>
+        <dt>Ctrl+],&darr;</dt><dd>Story Down</br></dd>
     </dl>
+</div>
 </template>
 
 <template name="workstories">
