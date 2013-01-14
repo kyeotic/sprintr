@@ -175,7 +175,7 @@ selectLastTask = (storyId) ->
     Meteor.flush()
     Lib.activateInput $(".tasks > ##{taskId} > input[name=\"name\"]")
 selectStory = (storyId) ->
-    Lib.activateInput $(".stories > ##{storyId} > input[name=\"name\"]")
+    Lib.activateInput $(".stories > ##{storyId} > [name=\"name\"]")
 selectPreviousWorkStory = (storyId) ->
     storyIndex = SprintModel.getStoryIndex(storyId)
     if storyIndex <= 0 #can't move to previous if first
