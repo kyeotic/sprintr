@@ -6,6 +6,11 @@ animate()
     -o-transition arguments
     transition arguments
 
+border-radius()
+  -webkit-border-radius: arguments
+  -moz-border-radius: arguments
+  border-radius: arguments
+
 .sprint-menu
     margin 15px 0 0 0
 
@@ -34,6 +39,8 @@ animate()
         display inline-block
     dd
         display inline
+.hotkey-list
+    font-size .8em
 
 .story textarea
     resize none
@@ -62,3 +69,8 @@ ul.tasks
         background-color #fff8dc
     .dragging-other input
         //background-color #00d
+.task-move:hover,.remove-task:hover,.task-move:active,.remove-task:active
+    border-radius 8px
+    border 1px solid #ccc
+.add-task
+    float right

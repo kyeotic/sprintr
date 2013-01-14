@@ -12,8 +12,8 @@
         
         <div class="row-fluid">
             {{> workstories}}
-            <button class="btn btn-small add-story" tabindex="-1">
-                <i class="icon-plus"></i>Add WorkStory
+            <button class="btn btn-small btn-primary add-story" tabindex="-1">
+                <i class="icon-plus icon-white"></i>Add WorkStory
             </button>
         </div>
         
@@ -55,24 +55,24 @@
             <h2 class="story-commit">{{#if isCommitted}}C{{else}}S{{/if}}</h2>
             
             <input type="text" name="points" class="story-points" value="{{points}}">
-            <textarea type="text" name="name" rows="2" class="story-name span8" 
+            <textarea type="text" name="name" rows="2" class="story-name span9" 
                 value="{{name}}" placeholder="New WorkStory"></textarea>
             
-            <button name="move" class="btn btn-mini btn-info story-move" tabindex="-1">
-                <i class="icon-screenshot icon-white"></i>
+            <button name="move" class="btn btn-mini story-move" tabindex="-1">
+                <i class="icon-screenshot"></i>
             </button>
-            <button class="btn btn-small  btn-info story-collapse" tabindex="-1">
-                <i class="{{#if isCollapsed}}icon-chevron-right{{else}}icon-chevron-down{{/if}} icon-white"></i>
+            <button class="btn btn-small story-collapse" tabindex="-1">
+                <i class="{{#if isCollapsed}}icon-chevron-right{{else}}icon-chevron-down{{/if}}"></i>
             </button>
             <button name="remove" class="btn btn-small {{deleteStoryClass}} remove-story" tabindex="-1">
-                <i class="icon-remove"></i>
+                <i class="icon-remove icon-white"></i>
             </button>
                 
                 
             <div class="story-body {{#if isCollapsed}}collapsed{{/if}}">
                 {{> tasks}}
-                <button name="add-task" class="btn btn-small add-task" tabindex="-1">
-                    <i class="icon-plus"></i>Add Task
+                <button name="add-task" class="btn btn-small btn-primary add-task" tabindex="-1">
+                    <i class="icon-plus icon-white"></i>Add Task
                 </button>
             </div>
             
@@ -86,13 +86,13 @@
     {{#each tasks}}
         <li class="task {{taskDrag ../id}}" id="{{id}}">
             <input type="text" name="points" class="task-points" value="{{points}}">
-            <input type="text" name="name" class="task-name span8" 
+            <input type="text" name="name" class="task-name span9" 
                 value="{{name}}" placeholder="New Task" />
                 
             <button name="move" class="btn btn-mini btn-link task-move" tabindex="-1">
                 <i class="icon-screenshot"></i>
             </button>
-            <button name="remove" class="btn btn-mini remove-task" tabindex="-1">
+            <button name="remove" class="btn btn-mini btn-link remove-task" tabindex="-1">
                 <i class="icon-remove"></i>
             </button>
         </li>
