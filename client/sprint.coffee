@@ -17,6 +17,8 @@ Session.set('editingSprintName', false)
 Session.set("deleteConfirm", false)
 
 #store story id and task id when moving tasks in it
+movingStory = "movingStory"
+Session.set(movingStory, null)
 movingTask = "movingTask"
 Session.set(movingTask, null) 
 
@@ -144,7 +146,7 @@ Template.workstories.events {
         storyNode = getStoryNode(this.id, template)
         setY = event.pageY
         setH = $(storyNode).height()        
-        
+        Session.set(movingStory, storyId)
         storyMove = (e) ->
             if Math.abs(e.pageY - setY) >= setH #(setH * 1.5) #Get halfway past
                 direction = if e.pageY < setY then "up" else "down"
@@ -153,12 +155,19 @@ Template.workstories.events {
             return        
         $(window).mousemove(storyMove)        
         $(window).one "mouseup", ->
+            Session.set(movingStory, null)
             $(window).unbind("mousemove", storyMove)
         return
     "keydown .story": (e, template) ->
         storyHotkeys(e, this.id, template)
         return
 }
+
+Template.workstories.storyDrag = ->
+    movingStoryId = Session.get(movingStory)
+    if !movingStoryId?
+        return ""
+    return if movingStoryId == this.id then "dragging" else "dragging-other"
     
 selectLastTask = (storyId) ->
     story = SprintModel.getStory(storyId)

@@ -51,24 +51,25 @@
 <template name="workstories">
     <ul class="unstyled stories">
     {{#each workStories}}
-        <li class="story" id="{{id}}">
+        <li class="story {{storyDrag}}" id="{{id}}">
             <h2 class="story-commit">{{#if isCommitted}}C{{else}}S{{/if}}</h2>
             
             <input type="text" name="points" class="story-points" value="{{points}}">
             <textarea type="text" name="name" rows="2" class="story-name span9" 
                 value="{{name}}" placeholder="New WorkStory"></textarea>
+                
+            <div class="story-buttons">
+                <button name="move" class="btn btn-mini story-move" tabindex="-1">
+                    <i class="icon-screenshot"></i>
+                </button>
+                <button class="btn btn-small story-collapse" tabindex="-1">
+                    <i class="{{#if isCollapsed}}icon-chevron-right{{else}}icon-chevron-down{{/if}}"></i>
+                </button>
+                <button name="remove" class="btn btn-small {{deleteStoryClass}} remove-story" tabindex="-1">
+                    <i class="icon-remove icon-white"></i>
+                </button>
+            </div>
             
-            <button name="move" class="btn btn-mini story-move" tabindex="-1">
-                <i class="icon-screenshot"></i>
-            </button>
-            <button class="btn btn-small story-collapse" tabindex="-1">
-                <i class="{{#if isCollapsed}}icon-chevron-right{{else}}icon-chevron-down{{/if}}"></i>
-            </button>
-            <button name="remove" class="btn btn-small {{deleteStoryClass}} remove-story" tabindex="-1">
-                <i class="icon-remove icon-white"></i>
-            </button>
-                
-                
             <div class="story-body {{#if isCollapsed}}collapsed{{/if}}">
                 {{> tasks}}
                 <button name="add-task" class="btn btn-small btn-primary add-task" tabindex="-1">
