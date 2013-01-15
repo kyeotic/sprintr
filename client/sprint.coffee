@@ -98,6 +98,12 @@ Template.sprintSideBar.totalPoints = ->
         return
     SprintModel.subscribe() #to set subcription for initial display
     return SprintModel.points()
+Template.sprintSideBar.events {
+    "click #collapseAllStoriesButton": ->
+        setAllStoriesCollapse(true)
+    "click #expandAllStoriesButton": ->
+        setAllStoriesCollapse(false)
+}
 
 ###
 WorkStory
@@ -186,6 +192,29 @@ selectNextWorkStory = (storyId) ->
     if storyIndex >= SprintModel.sprint.workStories.length - 1 #can't select next if last
         return
     selectStory(SprintModel.sprint.workStories[storyIndex + 1].id)
+getStoryNode = (id) ->
+    storyIndex = SprintModel.getStoryIndex(id)
+    return $(".story##{id}:nth-child(#{storyIndex + 1})") #stupid 0-1 index disagreement
+getStoryCollapseString = (id) -> return "story#{id}-isCollapsed"
+
+toggleStoryCollapse = (id) ->
+    setStoryCollapse(id, !Session.get(getStoryCollapseString(id)))
+    return
+setStoryCollapse = (id, hide) ->
+    console.log getStoryNode(id)
+    body = getStoryNode(id).find(".story-body")
+    console.log body
+    body[if hide then "slideUp" else "slideDown"] 400, ->
+        Session.set(getStoryCollapseString(id), hide)
+    return    
+setAllStoriesCollapse = (hide) ->
+    selectorMod = if hide then ":not(collapsed)" else ".collapsed"
+    animation = if hide then "slideUp" else "slideDown"
+    $(".story-body#{selectorMod}")[animation] 400, ->
+        for story in SprintModel.sprint.workStories
+            do (story) ->
+                Session.set(getStoryCollapseString(story.id), hide)
+    return
     
 
 storyHotkeys = (e, storyId, template) ->
@@ -200,6 +229,8 @@ storyHotkeys = (e, storyId, template) ->
                 selectPreviousWorkStory(storyId)
             when 221,40 #] and down - next story
                 selectNextWorkStory(storyId)
+            when 77 #m - minimiza, maximize
+                toggleStoryCollapse(storyId)
             else
                 return
     else
@@ -207,22 +238,7 @@ storyHotkeys = (e, storyId, template) ->
     e.preventDefault()
     return
 
-getStoryNode = (id, template) ->
-    storyIndex = SprintModel.getStoryIndex(id)
-    return template.find(".story:nth-child(#{storyIndex + 1})") #stupid 0-1 index disagreement
 
-toggleStoryCollapse = (id, story) ->
-    collapser = "story#{id}-isCollapsed"
-    body = $(story).find(".story-body")
-    if Session.get(collapser)
-        #unhide
-        body.slideDown 400, ->
-            Session.set(collapser, false)
-    else
-        #hide
-        body.slideUp 400, ->
-            Session.set(collapser, true)
-    return
 
 ###
 Task
@@ -297,6 +313,10 @@ hotkeys = (e) ->
                 SprintModel.addStory()
                 Meteor.flush()
                 selectStory(SprintModel.sprint.workStories.last().id)
+            when 188 #comma - collapse all
+                setAllStoriesCollapse(true)
+            when 190 #. - expand all
+                setAllStoriesCollapse(false)
             else
                return
     else
