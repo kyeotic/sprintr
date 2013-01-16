@@ -53,16 +53,24 @@ border-radius()
     //margin-bottom 5px
 
 .story-buttons
-    display inline
+    display inline-block
+    vertical-align top
 
 .story textarea
     resize none
 
-.story-points, .task-points
-    width: 20px
+.story .story-points
+    display inline-block
+    vertical-align top
+    width 20px
+
+.task-points
+    width 20px
 
 .story-commit
-    display inline
+    display inline-block
+    vertical-align top
+    line-height 10px
 
 .story-body
     //animate all 2.5s ease-in-out
@@ -76,14 +84,12 @@ border-radius()
     cursor move
 
 
-
-
 .collapsed
     //max-height 0
     display none
 
 ul.tasks
-    margin-left 45px
+    margin-left 66px
     .dragging input
         background-color #fff8dc
     .dragging-other input
