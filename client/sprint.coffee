@@ -115,6 +115,8 @@ Template.workstories.deleteStoryClass = ->
 
 Template.workstories.events Lib.okCancelEvents ".story-name", {
     ok: (value) ->
+        console.log value
+        console.log this
         if this.name == value then return
         SprintModel.updateStory(this.id, "name", value, "$set")
 }
